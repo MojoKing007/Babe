@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#3d1030" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>I'm Sorry, Baby 💕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<audio id="bgMusic" loop>
+    <source src="music/song.mp3" type="audio/mpeg">
+</audio>
+
+<body>
+
+    <div class="petals-container" id="petals"></div>
+
+    <!-- Modal overlay — slides up as a bottom sheet on mobile -->
+    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Apology message">
+        <div class="overlay-backdrop" id="overlayBackdrop"></div>
+        <div class="overlay-card" id="overlayCard">
+            <div class="sheet-handle" aria-hidden="true"></div>
+            <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+            <div class="overlay-image-wrap">
+                <img src="" alt="A moment for you" id="overlayImg" loading="lazy" />
+            </div>
+            <p class="overlay-caption" id="overlayCaption"></p>
+            <button class="dismiss-btn" id="dismissBtn">Close ♡</button>
+        </div>
+    </div>
+
+    <main>
+        <header>
+            <div class="heart-icon" aria-hidden="true">♡</div>
+            <h1>I'm So Sorry</h1>
+            <p class="subtitle">Get Well Soon Honey…</p>
+        </header>
+
+        <section class="buttons-grid" aria-label="Apology messages">
+
+            <button class="glass-btn" data-id="0">
+                <span class="btn-emoji" aria-hidden="true">🌹</span>
+                <span class="btn-label">Forgive Me</span>
+                <span class="btn-sub">and I know it</span>
+            </button>
+
+            <button class="glass-btn" data-id="1">
+                <span class="btn-emoji" aria-hidden="true">💌</span>
+                <span class="btn-label">Miss You</span>
+                <span class="btn-sub">without you near</span>
+            </button>
+
+            <button class="glass-btn" data-id="2">
+                <span class="btn-emoji" aria-hidden="true">🌙</span>
+                <span class="btn-label">Smile</span>
+                <span class="btn-sub">every single second</span>
+            </button>
+
+            <button class="glass-btn" data-id="3">
+                <span class="btn-emoji" aria-hidden="true">✨</span>
+                <span class="btn-label">You Are My Everything</span>
+                <span class="btn-sub">truly, completely</span>
+            </button>
+
+            <button class="glass-btn" data-id="4">
+                <span class="btn-emoji" aria-hidden="true">🌸</span>
+                <span class="btn-label">I Love You</span>
+                <span class="btn-sub">with all my heart</span>
+            </button>
+
+            <button class="glass-btn" data-id="5">
+                <span class="btn-emoji" aria-hidden="true">💫</span>
+                <span class="btn-label">Kissi</span>
+                <span class="btn-sub">better than before</span>
+            </button>
+
+        </section>
+
+        <footer>
+            <p class="footer-text">Made with love 💕</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

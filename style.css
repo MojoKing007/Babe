@@ -1,0 +1,653 @@
+/* =============================================
+   APOLOGY WEBSITE — MOBILE-OPTIMISED
+   ============================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Prevent text resize on orientation change */
+    -webkit-text-size-adjust: 100%;
+}
+
+:root {
+    --rose: #e8476a;
+    --blush: #f9c6d0;
+    --deep: #7b1e3e;
+    --soft-white: rgba(255, 255, 255, 0.18);
+    --glass-border: rgba(255, 255, 255, 0.35);
+    --glass-shadow: rgba(120, 30, 60, 0.25);
+    --text-light: rgba(255, 255, 255, 0.92);
+    --text-dim: rgba(255, 255, 255, 0.6);
+
+    /* Safe-area insets for notched phones */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+
+    /* Minimum tap target */
+    --tap-min: 48px;
+}
+
+html {
+    height: 100%;
+    /* Smooth momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+}
+
+body {
+    min-height: 100%;
+    min-height: -webkit-fill-available;
+    /* iOS vh fix */
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+    background: linear-gradient(135deg,
+            #1a0a14 0%,
+            #3d1030 25%,
+            #6b1e40 50%,
+            #3d1030 75%,
+            #1a0a14 100%);
+    /* Use scroll instead of fixed on mobile (fixed bg has perf issues on iOS) */
+    background-attachment: scroll;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Account for notch at top */
+    padding-top: var(--safe-top);
+}
+
+/* Subtle noise texture */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+    /* GPU-composited so it doesn't repaint */
+    will-change: transform;
+}
+
+/* ── Floating petals ── */
+.petals-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.petal {
+    position: absolute;
+    top: -60px;
+    font-size: 1.1rem;
+    animation: fall linear infinite;
+    opacity: 0;
+    user-select: none;
+    /* Offload to GPU */
+    will-change: transform, opacity;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.65;
+    }
+
+    90% {
+        opacity: 0.45;
+    }
+
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* ── Main layout ── */
+main {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 860px;
+    /* Extra bottom padding for home-indicator bar */
+    padding: 2.5rem 1.25rem calc(2.5rem + var(--safe-bottom));
+    padding-left: calc(1.25rem + var(--safe-left));
+    padding-right: calc(1.25rem + var(--safe-right));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+/* ── Header ── */
+header {
+    text-align: center;
+    animation: fadeUp 0.8s ease both;
+}
+
+.heart-icon {
+    font-size: 3rem;
+    color: var(--rose);
+    animation: heartbeat 1.8s ease-in-out infinite;
+    display: block;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 30px rgba(232, 71, 106, 0.6);
+}
+
+@keyframes heartbeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    14% {
+        transform: scale(1.15);
+    }
+
+    28% {
+        transform: scale(1);
+    }
+
+    42% {
+        transform: scale(1.1);
+    }
+
+    70% {
+        transform: scale(1);
+    }
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    /* Fluid type — stays readable on small phones */
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, #fff 0%, #f9c6d0 50%, #e8476a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.85rem;
+    /* Prevent gradient text clipping on some Android */
+    padding-bottom: 2px;
+}
+
+.subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(0.95rem, 4vw, 1.2rem);
+    color: var(--text-dim);
+    line-height: 1.8;
+    font-weight: 300;
+}
+
+/* ── Buttons grid ── */
+.buttons-grid {
+    display: grid;
+    /* 2 columns on all mobile, 3 on wide screens */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    animation: fadeUp 0.8s ease 0.25s both;
+}
+
+@media (min-width: 600px) {
+    .buttons-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+@media (min-width: 860px) {
+    .buttons-grid {
+        gap: 1.4rem;
+    }
+}
+
+/* ── Glass button ── */
+.glass-btn {
+    position: relative;
+    /* Guarantee minimum tap target */
+    min-height: var(--tap-min);
+    padding: 1.4rem 0.9rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    text-align: center;
+    overflow: hidden;
+    outline: none;
+    /* Remove tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
+    /* Layer 1 — frosted glass base */
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow:
+        0 6px 24px var(--glass-shadow),
+        0 2px 6px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid var(--glass-border);
+
+    /* Only animate transform on desktop to avoid jank on low-end phones */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+    will-change: transform;
+}
+
+/* Layer 2 — inner glow ring */
+.glass-btn::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 18px;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.13) 0%,
+            rgba(255, 255, 255, 0.03) 50%,
+            rgba(232, 71, 106, 0.09) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+
+/* Layer 3 — shimmer sweep (desktop hover only) */
+.glass-btn::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -60%;
+    width: 60%;
+    height: 300%;
+    background: linear-gradient(105deg,
+            transparent 40%,
+            rgba(255, 255, 255, 0.18) 50%,
+            transparent 60%);
+    transform: skewX(-15deg);
+    transition: left 0.55s ease;
+    pointer-events: none;
+}
+
+/* Hover — only on devices with a real pointer (not touchscreens) */
+@media (hover: hover) and (pointer: fine) {
+    .glass-btn:hover::after {
+        left: 130%;
+    }
+
+    .glass-btn:hover {
+        transform: translateY(-5px) scale(1.03);
+        box-shadow:
+            0 18px 44px rgba(120, 30, 60, 0.45),
+            0 6px 18px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 0 1px rgba(232, 71, 106, 0.4);
+    }
+
+    .glass-btn:hover .btn-emoji {
+        transform: scale(1.2) rotate(-5deg);
+    }
+}
+
+/* Active / tap state — visible feedback for mobile */
+.glass-btn:active {
+    transform: scale(0.95);
+    transition-duration: 0.1s;
+    box-shadow:
+        0 2px 10px var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.btn-emoji {
+    font-size: 1.8rem;
+    display: block;
+    filter: drop-shadow(0 0 6px rgba(232, 71, 106, 0.5));
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+    /* Prevent emoji layout shift */
+    line-height: 1;
+}
+
+.btn-label {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(0.82rem, 3.2vw, 1rem);
+    font-weight: 700;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+}
+
+.btn-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(0.72rem, 2.5vw, 0.85rem);
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+    font-weight: 300;
+}
+
+/* ── Overlay / Bottom Sheet ── */
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    /* anchors card to bottom on mobile */
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Separate clickable backdrop */
+.overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 3, 8, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+}
+
+.overlay-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 520px;
+    background: rgba(40, 8, 24, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    /* Rounded top corners — bottom sheet style */
+    border-radius: 28px 28px 0 0;
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    box-shadow:
+        0 -16px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    padding: 1rem 1.5rem calc(1.5rem + var(--safe-bottom));
+    text-align: center;
+    /* Slide up from below */
+    transform: translateY(100%);
+    transition: transform 0.42s cubic-bezier(0.34, 1.4, 0.64, 1);
+    /* Enable momentum scroll inside card if content overflows */
+    overflow-y: auto;
+    max-height: 90vh;
+    -webkit-overflow-scrolling: touch;
+}
+
+.overlay.visible .overlay-card {
+    transform: translateY(0);
+}
+
+/* On wider screens, show as centred card instead */
+@media (min-width: 600px) {
+    .overlay {
+        align-items: center;
+    }
+
+    .overlay-card {
+        border-radius: 28px;
+        max-width: 500px;
+        width: 90vw;
+        padding: 2.2rem 2rem calc(2rem + var(--safe-bottom));
+        transform: scale(0.88) translateY(20px);
+        max-height: 85vh;
+    }
+
+    .overlay.visible .overlay-card {
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Drag handle pill */
+.sheet-handle {
+    width: 40px;
+    height: 5px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.25);
+    margin: 0 auto 1rem;
+}
+
+@media (min-width: 600px) {
+    .sheet-handle {
+        display: none;
+    }
+}
+
+.overlay-image-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#overlayImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s ease;
+}
+
+/* Emoji fallback */
+.image-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.image-fallback .big-emoji {
+    font-size: 4.5rem;
+    filter: drop-shadow(0 0 18px rgba(232, 71, 106, 0.7));
+    animation: pulse 2s ease-in-out infinite;
+    line-height: 1;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.image-fallback p {
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--text-dim);
+}
+
+.overlay-caption {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 4vw, 1.15rem);
+    color: var(--text-dim);
+    line-height: 1.75;
+    padding: 0 0.25rem;
+    margin-bottom: 1.25rem;
+}
+
+/* Close X button */
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    /* Large tap target */
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.close-btn:active,
+.close-btn:hover {
+    background: rgba(232, 71, 106, 0.35);
+    transform: rotate(90deg);
+}
+
+/* Full-width dismiss button — easy thumb reach */
+.dismiss-btn {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(135deg,
+            rgba(232, 71, 106, 0.3) 0%,
+            rgba(123, 30, 62, 0.4) 100%);
+    border: 1px solid rgba(232, 71, 106, 0.45);
+    border-radius: 14px;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.dismiss-btn:active {
+    transform: scale(0.97);
+}
+
+/* ── Footer ── */
+footer {
+    animation: fadeUp 0.8s ease 0.45s both;
+}
+
+.footer-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 0 1rem;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ── Very small phones (< 360px) ── */
+@media (max-width: 359px) {
+    .buttons-grid {
+        gap: 0.75rem;
+    }
+
+    .glass-btn {
+        padding: 1.1rem 0.6rem;
+        border-radius: 16px;
+    }
+
+    .btn-emoji {
+        font-size: 1.5rem;
+    }
+}
+
+/* ── Landscape on phone ── */
+@media (max-height: 500px) and (orientation: landscape) {
+    main {
+        padding-top: 1rem;
+        gap: 1.25rem;
+    }
+
+    .heart-icon {
+        font-size: 2rem;
+    }
+
+    h1 {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        margin-bottom: 0.4rem;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    /* hide on very short landscape to save space */
+    .buttons-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    .glass-btn {
+        padding: 0.9rem 0.7rem;
+    }
+
+    .overlay-card {
+        max-height: 95vh;
+        padding-bottom: calc(0.75rem + var(--safe-bottom));
+    }
+
+    .overlay-image-wrap {
+        aspect-ratio: 16/9;
+    }
+}
